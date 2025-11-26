@@ -1,0 +1,14 @@
+{
+  "name": "graphql-project",
+  "version": "1.0.0",
+  "description": "graphql demo",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run dev"
+  },
+  "author": "Kingshuk",
+  "license": "ISC",
+  "dependencies": {
+    "graphql": "^16.12.0"
+  }
+}
