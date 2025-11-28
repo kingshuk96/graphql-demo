@@ -4,21 +4,24 @@ import { createHandler } from "graphql-http/lib/use/express";
 import { ruruHTML } from "ruru/server";
 const schema = buildSchema(`
   type Query {
-    hello: String
+    hello(name: String!): String
     age: Int
+    weight: Float!
+    isOver18: Boolean
+    hobbies: [String]
   }
 `)
 
 const rootValue = {
-  hello: () => "Hello world!",
-  age: () => 42
+  hello: ({ name }) => "Hello!" + name,
+  age: 42,
+  weight: 80.78,
+  isOver18: true,
+  hobbies: () => {
+    return ["reading", "traveling", "sports"]
+  }
 }
 
-const source = "{ age }"
-
-graphql({ schema, source, rootValue }).then(response => {
-  console.log(response)
-})
 
 const app = express();
 
