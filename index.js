@@ -24,6 +24,7 @@ const app = express();
 
 app.all('/graphql', createHandler({ schema, rootValue }));
 
+
 app.get('/', (req, res) => {
   res.type('html');
   res.end(ruruHTML({
