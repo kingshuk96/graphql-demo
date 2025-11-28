@@ -9,7 +9,14 @@ const schema = buildSchema(`
     weight: Float!
     isOver18: Boolean
     hobbies: [String]
+    user: User
   }
+    type User{
+        id: ID!
+        name: String!
+        age: Int!
+        email: String!
+    }
 `)
 
 const rootValue = {
@@ -19,6 +26,14 @@ const rootValue = {
   isOver18: true,
   hobbies: () => {
     return ["reading", "traveling", "sports"]
+  },
+  user: () => {
+    return {
+      id: 1,
+      name: "John Doe",
+      age: 42,
+      email: "john.doe@example.com"
+    }
   }
 }
 
