@@ -1,46 +1,70 @@
-import { graphql, buildSchema } from "graphql"
+import { graphql, buildSchema, GraphQLSchema } from "graphql"
 import express from "express"
 import { createHandler } from "graphql-http/lib/use/express";
 import { ruruHTML } from "ruru/server";
-const schema = buildSchema(`
-  type Query {
-    hello(name: String!): String
-    age: Int
-    weight: Float!
-    isOver18: Boolean
-    hobbies: [String]
-    user: User
-  }
-    type User{
-        id: ID!
-        name: String!
-        age: Int!
-        email: String!
-    }
-`)
+// const schema = buildSchema(`
+//   type Query {
+//     hello(name: String!): String
+//     age: Int
+//     weight: Float!
+//     isOver18: Boolean
+//     hobbies: [String]
+//     user: User
+//   }
+//     type User{
+//         id: ID!
+//         name: String!
+//         age: Int!
+//         email: String!
 
-const rootValue = {
-  hello: ({ name }) => "Hello!" + name,
-  age: 42,
-  weight: 80.78,
-  isOver18: true,
-  hobbies: () => {
-    return ["reading", "traveling", "sports"]
-  },
-  user: () => {
-    return {
-      id: 1,
-      name: "John Doe",
-      age: 42,
-      email: "john.doe@example.com"
-    }
+//     }
+// `)
+const user= new GraphQLObjectType({
+  name: 'User',
+  fields: {
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    age: { type: GraphQLInt },
+    email: { type: GraphQLString }
   }
-}
+});
+const schema = new GraphQLSchema({
+  query: new GraphQLObjectType({
+    name: 'Query',
+    fields: {
+      hello: {
+        type: GraphQLString,
+        resolve:()  => {
+          return "Hello!";
+        }
+      }
+    }
+  })
+});
+
+
+// const rootValue = {
+//   hello: ({ name }) => "Hello!" + name,
+//   age: 42,
+//   weight: 80.78,
+//   isOver18: true,
+//   hobbies: () => {
+//     return ["reading", "traveling", "sports"]
+//   },
+//   user: () => {
+//     return {
+//       id: 1,
+//       name: "John Doe",
+//       age: 42,
+//       email: "john.doe@example.com"
+//     }
+//   }
+// }
 
 
 const app = express();
 
-app.all('/graphql', createHandler({ schema, rootValue }));
+app.all('/graphql', createHandler({ schema }));
 
 
 app.get('/', (req, res) => {
