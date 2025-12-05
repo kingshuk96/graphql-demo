@@ -2,42 +2,66 @@
 import { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLID, GraphQLInt } from "graphql"
 // graphql, buildSchema,
 import express from "express" 
-import { createHandler } from "graphql-http/lib/use/express";
+// import { createHandler } from "graphql-http/lib/use/express";
 import { ruruHTML } from "ruru/server";
+import { createYoga } from "graphql-yoga";
+import { schema } from "./src/graphql/index.js";
 
-const user = new GraphQLObjectType({
-  name: 'User',
-  fields: {
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    age: { type: GraphQLInt },
-    email: { type: GraphQLString }
-  }
+const yoga = createYoga({
+  schema
 });
-const schema = new GraphQLSchema({
-  query: new GraphQLObjectType({
-    name: 'Query',
-    fields: {
-      hello: {
-        type: GraphQLString,
-        resolve:()  => {
-          return "Hello!";
-        }
-      },
-      user: {
-        type: user,
-        resolve: () => {
-          return {
-            id: 1,
-            name: "John Doe",
-            age: 42,
-            email: "abc@gamil.com"
-          }
-        }
-      }
-    }
-  })
-});
+
+
+const app = express();
+
+// app.all('/graphql', createHandler({ schema }));
+app.use('/graphql', yoga);
+
+app.get('/', (req, res) => {
+  res.type('html');
+  res.end(ruruHTML({
+    title: 'GraphQL',
+    description: 'GraphQL'
+  }))
+})
+app.listen(4000, () => {
+  console.log('Listening on port 4000')
+})
+
+
+// const user = new GraphQLObjectType({
+//   name: 'User',
+//   fields: {
+//     id: { type: GraphQLID },
+//     name: { type: GraphQLString },
+//     age: { type: GraphQLInt },
+//     email: { type: GraphQLString }
+//   }
+// });
+// const schema = new GraphQLSchema({
+//   query: new GraphQLObjectType({
+//     name: 'Query',
+//     fields: {
+//       hello: {
+//         type: GraphQLString,
+//         resolve:()  => {
+//           return "Hello!";
+//         }
+//       },
+//       user: {
+//         type: user,
+//         resolve: () => {
+//           return {
+//             id: 1,
+//             name: "John Doe",
+//             age: 42,
+//             email: "abc@gamil.com"
+//           }
+//         }
+//       }
+//     }
+//   })
+// });
 
 // const schema = buildSchema(`
 //   type Query {
@@ -74,19 +98,3 @@ const schema = new GraphQLSchema({
 //   }
 // }
 
-
-const app = express();
-
-app.all('/graphql', createHandler({ schema }));
-
-
-app.get('/', (req, res) => {
-  res.type('html');
-  res.end(ruruHTML({
-    title: 'GraphQL',
-    description: 'GraphQL'
-  }))
-})
-app.listen(4000, () => {
-  console.log('Listening on port 4000')
-})
