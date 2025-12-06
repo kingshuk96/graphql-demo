@@ -8,9 +8,6 @@ const queries = `
     }
     
 `;
-
-
-
 const typeDefs = [queries, User];
 
 const resolvers = {
